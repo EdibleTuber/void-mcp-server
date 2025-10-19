@@ -1,0 +1,14 @@
+{
+  "allowed_root": "/path/to/your/project",
+  "additional_blocked": [
+    "secrets",
+    "credentials",
+    ".aws",
+    "*.secret"
+  ],
+  "additional_extensions": [
+    ".vue",
+    ".svelte",
+    ".sql"
+  ]
+}
