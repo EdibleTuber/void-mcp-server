@@ -54,7 +54,7 @@ cp mcp_config.example.json mcp_config.json
 3. Find the MCP Configuration section
 4. Add your server:
    - **Command:** `/path/to/.venv/bin/python3`
-   - **Args:** `["/full/path/to/void_mcp_server.py"]`
+   - **Args:** `["/full/path/to/mcp_server.py"]`
    - **Working Directory:** Your project root
 
 #### Option 2: Edit MCP Config File
@@ -68,7 +68,7 @@ Create or edit the MCP servers config file:
   "mcpServers": {
     "filesystem": {
       "command": "/absolute/path/to/.venv/bin/python3",
-      "args": ["/absolute/path/to/void_mcp_server.py"],
+      "args": ["/absolute/path/to/mcp_server.py"],
       "cwd": "/your/project/directory"
     }
   }
@@ -182,7 +182,7 @@ python3 --version  # Must be 3.10+
 pip list | grep mcp
 
 # Try running manually
-python3 void_mcp_server.py
+python3 mcp_server.py
 ```
 
 ### Void Can't Connect
@@ -226,7 +226,7 @@ Then update `mcp_config.json`:
 
 ### Custom Tool Prompts
 
-In `void_mcp_server.py`, the system prompt is automatically provided via the `@mcp.prompt()` decorator. Modify this function to customize tool instructions for your use case.
+In `mcp_server.py`, the system prompt is automatically provided via the `@mcp.prompt()` decorator. Modify this function to customize tool instructions for your use case.
 
 ### Extending Tools
 

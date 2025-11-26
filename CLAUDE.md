@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a sandboxed MCP (Model Context Protocol) server that provides secure filesystem access to any MCP-compatible application (Void Editor, Claude Desktop, Cline, Zed, etc.). It's a single-file Python server (`void_mcp_server.py`) that exposes filesystem operations as MCP tools with multiple layers of security controls.
+This is a sandboxed MCP (Model Context Protocol) server that provides secure filesystem access to any MCP-compatible application (Void Editor, Claude Desktop, Cline, Zed, etc.). It's a single-file Python server (`mcp_server.py`) that exposes filesystem operations as MCP tools with multiple layers of security controls.
 
 **GitHub Repository**: https://github.com/EdibleTuber/mcp-server
 
@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ### Running the Server
 ```bash
 # Direct execution (for testing)
-python void_mcp_server.py
+python mcp_server.py
 
 # Via MCP client (Void Editor, Claude Desktop, etc.)
 # Configure in your MCP client's settings
@@ -43,7 +43,7 @@ pytest tests/
 ## Architecture
 
 ### Single-File Design
-The entire server is contained in `void_mcp_server.py`. This intentional design keeps the security logic centralized and auditable.
+The entire server is contained in `mcp_server.py`. This intentional design keeps the security logic centralized and auditable.
 
 ### Security-First Architecture
 All filesystem operations flow through the `SecurityConfig` class, which implements:
@@ -119,7 +119,7 @@ The server includes a heartbeat mechanism (10-second intervals) to help debug co
 ```
 
 ### Configuration Loading
-The server looks for `mcp_config.json` in the same directory as `void_mcp_server.py`. The path is resolved using:
+The server looks for `mcp_config.json` in the same directory as `mcp_server.py`. The path is resolved using:
 ```python
 _script_dir = Path(__file__).parent
 _config_path = _script_dir / "mcp_config.json"
@@ -183,7 +183,7 @@ For models with weaker tool-calling capabilities, use the enhanced prompt.
 ## File Organization
 
 ### Core Files
-- `void_mcp_server.py` - Main server implementation (single file)
+- `mcp_server.py` - Main server implementation (single file)
 - `mcp_config.json` - Security and path configuration
 - `requirements.txt` - Python dependencies
 
@@ -206,8 +206,8 @@ For models with weaker tool-calling capabilities, use the enhanced prompt.
 
 ### Making Changes to the Server
 1. Activate virtual environment: `source .void_venv/bin/activate`
-2. Edit `void_mcp_server.py`
-3. Test locally: `python void_mcp_server.py` (verify it starts)
+2. Edit `mcp_server.py`
+3. Test locally: `python mcp_server.py` (verify it starts)
 4. Run verification: `python test_mcp_tools.py`
 5. Restart your MCP client to pick up changes
 

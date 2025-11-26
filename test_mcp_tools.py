@@ -12,7 +12,7 @@ def test_import():
     """Test that the server can be imported without errors"""
     print("1. Testing server import...")
     try:
-        from void_mcp_server import mcp, security
+        from mcp_server import mcp, security
         print("   ✓ Server imported successfully")
         print(f"   ✓ Server name: {mcp.name}")
         print(f"   ✓ Allowed root: {security.allowed_root}")
@@ -206,10 +206,10 @@ def main():
     print("Testing complete!")
     print("=" * 60)
     print("\nNext steps:")
-    print("1. Start the server: python void_mcp_server.py")
-    print("2. Configure Void Editor to connect to the server")
-    print("3. Test with your LLM in Void")
-    print("\nIf using qwen3-coder:30b, try the enhanced System_prompt_enhanced.txt")
+    print("1. Start the server: python mcp_server.py")
+    print("2. Configure your MCP client to connect to the server")
+    print("3. Test with your LLM")
+    print("\nFor models with weaker tool-calling, use System_prompt_enhanced.txt")
 
 if __name__ == "__main__":
     main()
