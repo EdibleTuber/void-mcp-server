@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a sandboxed MCP (Model Context Protocol) server that provides Void Editor with secure filesystem access. It's a single-file Python server (`void_mcp_server.py`) that exposes filesystem operations as MCP tools with multiple layers of security controls.
+This is a sandboxed MCP (Model Context Protocol) server that provides secure filesystem access to any MCP-compatible application (Void Editor, Claude Desktop, Cline, Zed, etc.). It's a single-file Python server (`void_mcp_server.py`) that exposes filesystem operations as MCP tools with multiple layers of security controls.
 
-**GitHub Repository**: https://github.com/EdibleTuber/void-mcp-server
+**GitHub Repository**: https://github.com/EdibleTuber/mcp-server
 
 ## Development Setup
 
@@ -26,8 +26,9 @@ pip install -r requirements.txt
 # Direct execution (for testing)
 python void_mcp_server.py
 
-# Via Void Editor (configured in Void's MCP settings)
-# See Directions.md for full configuration details
+# Via MCP client (Void Editor, Claude Desktop, etc.)
+# Configure in your MCP client's settings
+# See Directions.md for configuration details
 ```
 
 ### Testing
@@ -102,8 +103,8 @@ Extension checking happens in `is_path_allowed()` for both existing files and fi
 ### Search Implementation
 `search_in_files()` validates each file individually during recursive search to prevent security bypasses. Results are limited to 50 matches to avoid overwhelming responses.
 
-### Void Editor Integration
-The server includes a heartbeat mechanism (10-second intervals) to help debug connection issues with Void Editor. The heartbeat runs in a daemon thread so it doesn't block shutdown.
+### MCP Client Integration
+The server includes a heartbeat mechanism (10-second intervals) to help debug connection issues with MCP clients. The heartbeat runs in a daemon thread so it doesn't block shutdown.
 
 ## Configuration Notes
 
@@ -208,7 +209,7 @@ For models with weaker tool-calling capabilities, use the enhanced prompt.
 2. Edit `void_mcp_server.py`
 3. Test locally: `python void_mcp_server.py` (verify it starts)
 4. Run verification: `python test_mcp_tools.py`
-5. Restart Void Editor to pick up changes
+5. Restart your MCP client to pick up changes
 
 ### Testing Security Rules
 1. Modify `mcp_config.json` with new rules
@@ -271,8 +272,8 @@ Resources are registered via `@mcp.resource()` and provide read-only context:
 
 ## Known Issues and Workarounds
 
-### Void Editor Working Directory
-Some versions of Void may not properly respect the `cwd` setting in MCP configuration. If you encounter "Path outside allowed directory" errors, ensure your project is located in a directory that Void can access.
+### MCP Client Working Directory
+Some MCP clients may not properly respect the `cwd` setting in MCP configuration. If you encounter "Path outside allowed directory" errors, ensure your project is located in a directory that the client can access.
 
 ### Model Compatibility
 Tool-calling capability varies by model:
