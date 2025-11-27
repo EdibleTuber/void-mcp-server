@@ -287,6 +287,88 @@ def delete_file(path: str) -> str:
 
 
 @mcp.tool(
+    title="Edit File",
+    description="Make precise edits to a file by replacing exact text. Safer than rewriting entire file. Validates text exists and is unique. Preserves formatting and indentation.",
+    annotations=ToolAnnotations(
+        readOnlyHint=False,
+        destructiveHint=True,
+        idempotentHint=True
+    )
+)
+def edit_file(file_path: str, old_string: str, new_string: str, replace_all: bool = False) -> str:
+    """Edit a file by replacing exact text matches.
+
+    Args:
+        file_path: Path to file to edit
+        old_string: Exact text to find and replace (must match exactly including whitespace)
+        new_string: Replacement text
+        replace_all: If True, replace all occurrences. If False (default), old_string must be unique.
+
+    Returns:
+        Success message or error description
+    """
+    # Security validation
+    allowed, reason = security.is_path_allowed(file_path)
+    if not allowed:
+        return f"Access denied: {reason}"
+
+    try:
+        abs_path = Path(file_path).resolve()
+
+        # File existence check
+        if not abs_path.exists():
+            return f"File not found: {file_path}"
+
+        if not abs_path.is_file():
+            return f"Not a file: {file_path}"
+
+        # Size check
+        size_ok, size_reason = security.check_file_size(str(abs_path))
+        if not size_ok:
+            return size_reason
+
+        # Read file
+        try:
+            with open(abs_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except UnicodeDecodeError:
+            return f"File appears to be binary or uses unsupported encoding: {file_path}"
+
+        # Validate old_string exists
+        if old_string not in content:
+            return f"Error: old_string not found in {file_path}"
+
+        # Check uniqueness (if not replace_all)
+        if not replace_all:
+            count = content.count(old_string)
+            if count > 1:
+                return (
+                    f"Error: old_string appears {count} times in {file_path}. "
+                    f"Use replace_all=True to replace all occurrences, or provide "
+                    f"more context to make old_string unique."
+                )
+
+        # Perform replacement
+        if replace_all:
+            new_content = content.replace(old_string, new_string)
+            replacements = content.count(old_string)
+        else:
+            new_content = content.replace(old_string, new_string, 1)
+            replacements = 1
+
+        # Write back
+        with open(abs_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+
+        # Success message
+        rel_path = abs_path.relative_to(security.allowed_root)
+        return f"Successfully replaced {replacements} occurrence(s) in {rel_path}"
+
+    except Exception as e:
+        return f"Error editing file: {str(e)}"
+
+
+@mcp.tool(
     title="List Directory",
     description="List all files and subdirectories in a directory. Shows file sizes. Use this to explore project structure or verify file existence.",
     annotations=ToolAnnotations(

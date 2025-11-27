@@ -88,6 +88,7 @@ Available tools:
 - read_file(path: str) - Read file contents
 - write_file(path: str, content: str) - Write or overwrite a file
 - create_file(path: str, content: str = "") - Create a new file (fails if exists)
+- edit_file(file_path: str, old_string: str, new_string: str, replace_all: bool = False) - Precisely edit file by replacing exact text
 - delete_file(path: str) - Delete a file
 - list_directory(path: str = ".") - List directory contents
 - create_directory(path: str) - Create a directory
@@ -99,17 +100,19 @@ When calling these tools, use the exact function name and parameters. Paths can 
 Examples:
 - Create: create_file("src/utils.py", "def helper():\n    pass")
 - Read: read_file("src/main.py")
-- Modify: First read_file(), then write_file() with updated content
+- Edit: edit_file("config.py", "DEBUG = True", "DEBUG = False")
+- Modify: For complete rewrites, use read_file() then write_file()
 - Search: search_in_files("TODO", "src", "*.py")
 ```
 
 ## Usage
 
-Once configured, in Void's Agent Mode, ask your AI to perform file operations:
+Once configured, ask your AI to perform file operations:
 
 - "Create a new Python file at `src/handlers.py` with basic structure"
 - "Read `config.json` and explain its structure"
-- "Update `main.py` to add error handling"
+- "In `main.py`, change the DEBUG variable from True to False"
+- "Add a docstring to the calculate function in utils.py"
 - "Search for all TODO comments in the codebase"
 - "Create a `tests/` directory and add a test file"
 

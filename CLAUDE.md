@@ -71,10 +71,11 @@ The server loads configuration from `mcp_config.json` at startup via `SecurityCo
 - **Resources** (`@mcp.resource()`): Read-only data providers (security config, workspace info)
 
 ### Available Tools
-The server exposes 8 filesystem tools:
+The server exposes 9 filesystem tools:
 - `read_file(path)` - Read file contents
 - `write_file(path, content)` - Write/overwrite file
 - `create_file(path, content="")` - Create new file (fails if exists)
+- `edit_file(file_path, old_string, new_string, replace_all=False)` - **Precise file editing** (NEW!)
 - `delete_file(path)` - Delete file
 - `list_directory(path=".")` - List directory contents
 - `create_directory(path)` - Create directory
@@ -102,6 +103,42 @@ Extension checking happens in `is_path_allowed()` for both existing files and fi
 
 ### Search Implementation
 `search_in_files()` validates each file individually during recursive search to prevent security bypasses. Results are limited to 50 matches to avoid overwhelming responses.
+
+### Edit File Tool
+The `edit_file()` tool enables precise, surgical edits to files without rewriting entire content:
+
+**Key Features:**
+- Find-and-replace specific text snippets
+- Validates that old_string exists in the file
+- Checks for uniqueness - fails if text appears multiple times (unless `replace_all=True`)
+- Preserves exact formatting and indentation
+- More token-efficient than read/modify/write workflow
+
+**Usage Patterns:**
+```python
+# Single replacement
+edit_file("app.py", "DEBUG = True", "DEBUG = False")
+
+# Multiline edit with context
+edit_file(
+    "utils.py",
+    old_string="def calculate(x, y):\n    return x + y",
+    new_string="def calculate(x, y):\n    \"\"\"Add two numbers.\"\"\"\n    return x + y"
+)
+
+# Replace all occurrences (e.g., rename variable)
+edit_file("models.py", "user_id", "account_id", replace_all=True)
+```
+
+**Error Handling:**
+- Returns error if old_string not found
+- Returns error if old_string appears multiple times (forces more context or replace_all)
+- Preserves file on any error
+
+**When to Use:**
+- **Use `edit_file`**: Modifying existing code, small surgical changes
+- **Use `write_file`**: Creating new files, complete rewrites, generated content
+- **Use `create_file`**: New files that must not already exist
 
 ### MCP Client Integration
 The server includes a heartbeat mechanism (10-second intervals) to help debug connection issues with MCP clients. The heartbeat runs in a daemon thread so it doesn't block shutdown.
