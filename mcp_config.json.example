@@ -1,0 +1,6 @@
+{
+  "allowed_root": "/home/edible/Projects/mcp_server",
+  "additional_blocked": [],
+  "additional_extensions": [],
+  "max_file_size_mb": 10
+}
